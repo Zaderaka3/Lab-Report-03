@@ -5,7 +5,7 @@ void loop() {
   // Read the analog input value from the potentiometer connected to pin A0
   int sensorValue = analogRead(A0);
   // Print the raw 10-bit value (0 to 1023) to the Serial Monitor
-  Serial.print("Potentiometer Value = ");
+  Serial.print("Potentiometer Bit Value = ");
   Serial.println(sensorValue);
   // Add a short delay for stability and readability
   delay(100);
