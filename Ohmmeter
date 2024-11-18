@@ -1,24 +1,25 @@
-void setup() {
-  Serial.begin(9600); // Initialize serial communication at 9600 baud
-}
-void loop() {
-  // Read the analog input value from the voltage divider at pin A0
-  int sensorValue = analogRead(A0); 
-  // Convert the analog reading to a voltage (0 to 5V)
-  float V = sensorValue * (5.0 / 1023.0);
-  // Known resistor value in ohms (adjust this value to match your setup)
-  float R1 = 1000.0; // 1 kΩ
-  // Calculate the current through the known resistor (I = (V_supply - V_measured) / R1)
-  float I = (5.0 - V) / R1;
-  // Calculate the resistance of the unknown resistor (R2 = V / I)
-  float R2 = V / I;
-  // Display the calculated values on the Serial Monitor
-  Serial.print("V = ");
-  Serial.print(V, 2); // Voltage with 2 decimal places
-  Serial.print("\t I = ");
-  Serial.print(I, 6); // Current with 6 decimal places for precision
-  Serial.print("\t R2 = ");
-  Serial.println(R2, 2); // Resistance with 2 decimal places
-  // Add a short delay for stability and readability
-  delay(500);
-}
+void setup() { 
+  Serial.begin(9600); // Initialize serial communication at 9600 baud 
+} 
+
+void loop() { 
+  // Read the analog input value from the voltage divider at pin A0 
+  int sensorValue = analogRead(A0);  
+  // Convert the analog reading to a voltage (0 to 5V) 
+  float V = sensorValue * (5.0 / 1023.0); 
+  // Known resistor value in ohms (adjust this value to match your setup) 
+  float R1 = 1000.0; // 1 kΩ 
+  // Calculate the current through the known resistor
+  float I = (5.0 - V) / R1; 
+  // Calculate the resistance of the unknown resistor (R2 = V / I) 
+  float R2 = V / I; 
+  // Display the calculated values on the Serial Monitor 
+  Serial.print("V = "); 
+  Serial.print(V, 2); // Voltage with 2 decimal places 
+  Serial.print("\t I = "); 
+  Serial.print(I, 6); // Current with 6 decimal places for precision 
+  Serial.print("\t R2 = "); 
+  Serial.println(R2, 2); // Resistance with 2 decimal place 
+  // Add a short delay for stability and readability 
+  delay(500); 
+} 
