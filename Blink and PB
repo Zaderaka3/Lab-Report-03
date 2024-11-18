@@ -1,5 +1,5 @@
 int PB = 0; // Counter variable
-bool 13 = 0; // LED state
+bool ledState = 0; // LED state
 bool buttonPressed = false; // Tracks if the button was pressed
 unsigned long startMillis = 0; // Time when the LED was turned on
 const unsigned long duration = 5000; // LED on duration (5 seconds)
