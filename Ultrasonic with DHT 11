@@ -1,0 +1,53 @@
+#include <DHT.h> // Includes the library for the DHT sensor to read temperature and humidity.
+#include <NewPing.h> // Includes the library for controlling the ultrasonic sensor.
+#define DHTPIN 7 // Defines the pin where the DHT sensor's data pin is connected.
+#define DHTTYPE DHT11 // Specifies the type of DHT sensor (DHT11).
+#define TRIGGER_PIN 10 // Defines the pin connected to the ultrasonic sensor's trigger pin.
+#define ECHO_PIN 13 // Defines the pin connected to the ultrasonic sensor's echo pin.
+#define MAX_DISTANCE 400 // Sets the maximum distance (in cm) the ultrasonic sensor can measure.
+NewPing sonar(TRIGGER_PIN, ECHO_PIN, MAX_DISTANCE); // Initializes the NewPing object for the ultrasonic sensor.
+float hum; // Variable to store humidity readings.
+float temp; // Variable to store temperature readings.
+float duration; // Variable to store the duration of the ultrasonic pulse.
+float distance; // Variable to store the calculated distance based on the ultrasonic reading.
+float soundsp; // Variable to store the calculated speed of sound (m/s).
+float soundcm; // Variable to store the speed of sound in cm/µs.
+int iterations = 5; // Number of iterations for the ultrasonic ping measurement.
+DHT dht(DHTPIN, DHTTYPE); // Initializes the DHT sensor object.
+
+void setup() {
+  Serial.begin(9600); // Initializes serial communication at 9600 baud rate.
+  dht.begin(); // Starts the DHT sensor.
+}
+
+void loop() {
+  delay(2000); // Waits 2 seconds between readings to allow the DHT sensor to stabilize.  
+  hum = dht.readHumidity(); // Reads humidity from the DHT sensor.
+  temp = dht.readTemperature(); // Reads temperature from the DHT sensor. 
+  // Calculates the speed of sound in air based on temperature and humidity.
+  soundsp = 331.4 + (0.606 * temp) + (0.0124 * hum); 
+  soundcm = soundsp / 10000; // Converts speed of sound to cm/µs for distance calculation.  
+  // Measures the median duration of 5 pings from the ultrasonic sensor.
+  duration = sonar.ping_median(iterations); 
+  distance = (duration / 2) * soundcm; // Converts duration to distance based on the calculated speed of sound.
+  // Prints the speed of sound, humidity, temperature, and distance to the serial monitor.
+  Serial.print("Sound: ");
+  Serial.print(soundsp);
+  Serial.print(" m/s,  ");
+  Serial.print("Humid: ");
+  Serial.print(hum);
+  Serial.print(" %, Temp: ");
+  Serial.print(temp);
+  Serial.print(" C, ");
+  Serial.print("Distance: ");  
+  // Checks if the measured distance is out of the sensor's range.
+  if (distance >= 400 || distance <= 2) {
+    Serial.print("Out of range"); // Prints "Out of range" if the distance is not measurable.
+  } else {
+    Serial.print(distance); // Prints the measured distance in cm.
+    Serial.print(" cm");
+    delay(500); // Short delay for better serial output readability.
+  } 
+  Serial.println(" "); // Moves to the next line in the serial monitor.
+  delay(500); // Additional delay before the next loop iteration.
+}
