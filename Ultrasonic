@@ -1,28 +1,34 @@
-#define trigPin 10
-#define echoPin 13
-float duration, distance;
+#define trigPin 10 // Define the pin number connected to the Trig pin of the ultrasonic sensor
+#define echoPin 13 // Define the pin number connected to the Echo pin of the ultrasonic sensor
+float duration, distance; // Variables to store the pulse duration and calculated distance
 
 void setup() {
-  Serial.begin(9600);
-  pinMode(trigPin, OUTPUT);
-  pinMode(echoPin, INPUT);
+  Serial.begin(9600); // Initialize serial communication at 9600 baud rate to print data to the Serial Monitor
+  pinMode(trigPin, OUTPUT); // Set the Trig pin as an OUTPUT (to send the ultrasonic pulse)
+  pinMode(echoPin, INPUT); // Set the Echo pin as an INPUT (to receive the reflected pulse)
 }
 
 void loop() {
-  digitalWrite(trigPin, LOW);
-  delayMicroseconds(2);
-  digitalWrite(trigPin, HIGH);
-  delayMicroseconds(10);
-  digitalWrite(trigPin, LOW);
-  duration = pulseIn(echoPin, HIGH);
-  distance = (duration/2) * 0.0343;
-  Serial.print("Distance =  ");
-  if (distance >= 400 || distance <= 2) {
-    Serial.println("Out of range");
+  // Generate a 10-microsecond pulse on the Trig pin to trigger the ultrasonic sensor
+  digitalWrite(trigPin, LOW); // Ensure the Trig pin is LOW before sending the pulse
+  delayMicroseconds(2); // Wait for 2 microseconds
+  digitalWrite(trigPin, HIGH); // Set the Trig pin HIGH to send a 10-microsecond pulse
+  delayMicroseconds(10); // Keep it HIGH for 10 microseconds
+  digitalWrite(trigPin, LOW); // Set the Trig pin LOW to end the pulse
+  // Measure the duration of the HIGH pulse on the Echo pin (time for the pulse to return)
+  duration = pulseIn(echoPin, HIGH);  // `pulseIn` measures the time in microseconds
+  // Calculate the distance in centimeters
+  // The formula is: distance = (time/2) * speed of sound
+  // Speed of sound in air is ~343 m/s or 0.0343 cm/µs
+  distance = (duration / 2) * 0.0343;
+  Serial.print("Distance =  "); // Print "Distance =" to the Serial Monitor
+  // Check if the measured distance is within the sensor's range
+  if (distance >= 400 || distance <= 2) { // If the distance is out of the sensor's range
+    Serial.println("Out of range"); // Print "Out of range"
   } else {
-    Serial.print(distance);
-    Serial.println(" cm");
-    delay(500);
+    Serial.print(distance); // Print the calculated distance
+    Serial.println(" cm"); // Append "cm" to indicate the units
+    delay(500); // Wait for 500 milliseconds before the next reading
   }
-  delay(500);
+  delay(500); // Additional delay to control the frequency of measurements
 }
