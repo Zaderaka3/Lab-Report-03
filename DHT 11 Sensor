@@ -1,62 +1,67 @@
-#include <Adafruit_Sensor.h>
-#include <DHT.h>
-#include <DHT_U.h>
-#define DHTPIN 2
-#define DHTTYPE    DHT11
+#include <Adafruit_Sensor.h> // Include the Adafruit Unified Sensor library for sensor abstraction
+#include <DHT.h> // Include the library for basic DHT sensor functions
+#include <DHT_U.h> // Include the unified library for advanced DHT sensor functions
+#define DHTPIN 2 // Define the digital pin to which the DHT11 sensor is connected
+#define DHTTYPE DHT11 // Define the type of DHT sensor (DHT11)
+// Create a DHT_Unified object to interact with the sensor
 DHT_Unified dht(DHTPIN, DHTTYPE);
+// Variable to store the minimum delay between readings (in milliseconds)
 uint32_t delayMS;
 
 void setup() {
-  Serial.begin(9600);
-  // Initialize device.
+  Serial.begin(9600); // Initialize serial communication at 9600 baud rate
+  // Initialize the DHT sensor
   dht.begin();
+  // Print a message to indicate that the sensor setup is starting
   Serial.println(F("DHTxx Unified Sensor Example"));
-  // Print temperature sensor details.
+
+  // Create a sensor_t object to store sensor details
   sensor_t sensor;
-  dht.temperature().getSensor(&sensor);
+  // Get and print temperature sensor details
+  dht.temperature().getSensor(&sensor); // Retrieve temperature sensor metadata
   Serial.println(F("------------------------------------"));
   Serial.println(F("Temperature Sensor"));
-  Serial.print  (F("Sensor Type: ")); Serial.println(sensor.name);
-  Serial.print  (F("Driver Ver:  ")); Serial.println(sensor.version);
-  Serial.print  (F("Unique ID:   ")); Serial.println(sensor.sensor_id);
-  Serial.print  (F("Max Value:   ")); Serial.print(sensor.max_value); Serial.println(F("°C"));
-  Serial.print  (F("Min Value:   ")); Serial.print(sensor.min_value); Serial.println(F("°C"));
-  Serial.print  (F("Resolution:  ")); Serial.print(sensor.resolution); Serial.println(F("°C"));
+  Serial.print(F("Sensor Type: ")); Serial.println(sensor.name); // Print sensor name
+  Serial.print(F("Driver Ver:  ")); Serial.println(sensor.version); // Print driver version
+  Serial.print(F("Unique ID:   ")); Serial.println(sensor.sensor_id); // Print unique sensor ID
+  Serial.print(F("Max Value:   ")); Serial.print(sensor.max_value); Serial.println(F("°C")); // Max temperature
+  Serial.print(F("Min Value:   ")); Serial.print(sensor.min_value); Serial.println(F("°C")); // Min temperature
+  Serial.print(F("Resolution:  ")); Serial.print(sensor.resolution); Serial.println(F("°C")); // Temperature resolution
   Serial.println(F("------------------------------------"));
-  // Print humidity sensor details.
-  dht.humidity().getSensor(&sensor);
+  // Get and print humidity sensor details
+  dht.humidity().getSensor(&sensor); // Retrieve humidity sensor metadata
   Serial.println(F("Humidity Sensor"));
-  Serial.print  (F("Sensor Type: ")); Serial.println(sensor.name);
-  Serial.print  (F("Driver Ver:  ")); Serial.println(sensor.version);
-  Serial.print  (F("Unique ID:   ")); Serial.println(sensor.sensor_id);
-  Serial.print  (F("Max Value:   ")); Serial.print(sensor.max_value); Serial.println(F("%"));
-  Serial.print  (F("Min Value:   ")); Serial.print(sensor.min_value); Serial.println(F("%"));
-  Serial.print  (F("Resolution:  ")); Serial.print(sensor.resolution); Serial.println(F("%"));
+  Serial.print(F("Sensor Type: ")); Serial.println(sensor.name); // Print sensor name
+  Serial.print(F("Driver Ver:  ")); Serial.println(sensor.version); // Print driver version
+  Serial.print(F("Unique ID:   ")); Serial.println(sensor.sensor_id); // Print unique sensor ID
+  Serial.print(F("Max Value:   ")); Serial.print(sensor.max_value); Serial.println(F("%")); // Max humidity
+  Serial.print(F("Min Value:   ")); Serial.print(sensor.min_value); Serial.println(F("%")); // Min humidity
+  Serial.print(F("Resolution:  ")); Serial.print(sensor.resolution); Serial.println(F("%")); // Humidity resolution
   Serial.println(F("------------------------------------"));
-  // Set delay between sensor readings based on sensor details.
-  delayMS = sensor.min_delay / 1000;
+  // Set delay between sensor readings (minimum delay specified by the sensor)
+  delayMS = sensor.min_delay / 1000; // Convert microseconds to milliseconds
 }
 
 void loop() {
-  // Delay between measurements.
-  delay(delayMS);
-  // Get temperature event and print its value.
+  delay(delayMS); // Wait the required delay time between sensor readings
+  // Create an event object to store the temperature reading
   sensors_event_t event;
-  dht.temperature().getEvent(&event);
-  if (isnan(event.temperature)) {
+  // Get temperature data and check for errors
+  dht.temperature().getEvent(&event); // Read temperature data
+  if (isnan(event.temperature)) {    // Check if the reading is invalid
     Serial.println(F("Error reading temperature!"));
-  }
-  else {
+  } else {
+    // Print the temperature value to the Serial Monitor
     Serial.print(F("Temperature: "));
     Serial.print(event.temperature);
     Serial.println(F("°C"));
   }
-  // Get humidity event and print its value.
-  dht.humidity().getEvent(&event);
-  if (isnan(event.relative_humidity)) {
+  // Get humidity data and check for errors
+  dht.humidity().getEvent(&event); // Read humidity data
+  if (isnan(event.relative_humidity)) { // Check if the reading is invalid
     Serial.println(F("Error reading humidity!"));
-  }
-  else {
+  } else {
+    // Print the humidity value to the Serial Monitor
     Serial.print(F("Humidity: "));
     Serial.print(event.relative_humidity);
     Serial.println(F("%"));
